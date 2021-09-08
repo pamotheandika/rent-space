@@ -1,0 +1,700 @@
+swagger: '2.0'
+info:
+  description: This is a Rent Space API
+  version: 1.0.0
+  title: Rent Space API
+  # put the contact info for your development or API team
+  contact:
+    email: you@your-company.com
+
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+
+# tags are used for organizing operations
+tags:
+- name: admins
+  description: Secured Admin-only calls
+- name: customer
+  description: Operations available to regular developers
+- name: owner
+  description: Operations available to regular developers
+- name: authetication
+  description: Operations available to regular developers
+- name: space
+  description: List api for Space
+  
+paths:
+  /space:
+    post:
+      tags:
+      - space
+      summary: Adding new space of owner
+      operationId: addSpace
+      description: |
+          User authetication with username & password
+      produces:
+      - application/json
+      parameters:
+      - in: body
+        name: owner
+        description: Add Space
+        schema:
+          $ref: '#/definitions/AddSpace'
+      responses:
+        200:
+          description: Success adding space
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/ResponseAddSpace'
+        400:
+          description: bad input parameter
+  /spaces:
+    get:
+      tags:
+      - space
+      summary: Get list data spaces
+      operationId: List data spaces
+      description: |
+          Fot retrieve all spaces data
+      produces:
+      - application/json
+      responses:
+        200:
+          description: Success adding space
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/ResponseSpaces'
+        400:
+          description: bad input parameter
+  /spaces/{idspace}:  
+    get:
+      tags:
+      - space
+      summary: Get Detail List Data
+      operationId: Get detail data space
+      description: |
+          Get detail data of space
+      produces:
+      - application/json
+      parameters:
+      - in: path
+        name: idspace
+        required: true
+        type: string
+      responses:
+        200:
+          description: Success adding space
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/ResponseSpaces'
+        400:
+          description: bad input parameter
+  /space/{city}:
+    get:
+      tags:
+      - space
+      summary: Get list data spaces by city
+      operationId: getSpaceByCity
+      description: |
+          Get all data spaces by filtering City
+      produces:
+      - application/json
+      parameters:
+      - in: path
+        name: city
+        required: true
+        type: string
+      responses:
+        200:
+          description: Get All Data Spaces by City
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/ResponseSpacesByCity'
+        400:
+          description: bad input parameter
+  /space/checkout:
+    post:
+      tags:
+      - space
+      summary: Checkout Spaces
+      operationId: checkoutSpaces
+      description: |
+          Checkout Space By Customer
+      produces:
+      - application/json
+      parameters:
+      - in: body
+        name: owner
+        description: Login user
+        schema:
+          $ref: '#/definitions/CheckoutScape'
+      responses:
+        200:
+          description: Retrieve detail checkout space
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/ResponseCheckoutSpace'
+        400:
+          description: bad input parameter
+  /user/login:
+    post:
+      tags:
+      - authetication
+      summary: User Login
+      operationId: userLogin
+      description: |
+          User authetication with username & password
+      produces:
+      - application/json
+      parameters:
+      - in: body
+        name: owner
+        description: Login user
+        schema:
+          $ref: '#/definitions/LoginUser'
+      responses:
+        200:
+          description: Success user login
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/ResponseUserLogin'
+        400:
+          description: bad input parameter
+  /registerOwner:
+    post:
+      tags:
+      - owner
+      summary: register owner
+      operationId: registerOwner
+      description: |
+          Create Customer Account 
+      produces:
+      - application/json
+      parameters:
+      - in: body
+        name: owner
+        description: owner to add
+        schema:
+          $ref: '#/definitions/registerCustomer'
+      responses:
+        200:
+          description: Success register owner
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/responseSuccessRegister'
+        400:
+          description: bad input parameter
+  /registercustomer:
+    post:
+      tags:
+      - customer
+      summary: register customer
+      operationId: regiserCustomer
+      description: |
+          Create Customer Account 
+      produces:
+      - application/json
+      parameters:
+      - in: body
+        name: customer
+        description: customer to add
+        schema:
+          $ref: '#/definitions/registerOwner'
+      responses:
+        200:
+          description: Success register Customer
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/responseSuccessRegister'
+        400:
+          description: bad input parameter
+  /updatecustomer:
+    put:
+      tags:
+      - customer
+      summary: update customer
+      operationId: updateCostumer
+      description: |
+        Update customer account, if need to change the customer data
+      produces:
+      - application/json
+      parameters:
+      - in: body
+        name: customer
+        description: customer to add
+        schema:
+          $ref: '#/definitions/customerUpdate'
+      responses:
+        200:
+          description: Success updated Customer Data
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/responseSuccessUpdated'
+        400:
+          description: bad input parameter
+  /customer/{idcustomer}:
+    delete:
+      tags:
+      - customer
+      summary: delete customer
+      operationId: deleteCustomer
+      description: |
+        Delete customer account
+      produces:
+      - application/json
+      parameters:
+      - in: path
+        name: idcustomer
+        required: true
+        type: string
+      - in: body
+        name: customer
+        description: deleted customer by id customer
+        schema:
+          $ref: '#/definitions/deletedCustomer'
+      responses:
+        200:
+          description: Success Delete Customer Data
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/ResponseDeletedCustomer'
+        400:
+          description: bad input parameter
+    get:
+      tags:
+      - customer
+      summary: detail customer
+      operationId: detailCustomer
+      description: |
+        Get detail customer account
+      produces:
+      - application/json
+      parameters:
+      - in: path
+        name: idcustomer
+        required: true
+        type: string
+      - in: body
+        name: customer
+        description: Detail data customer by id customer
+        schema:
+          $ref: '#/definitions/DetailCustomer'
+      responses:
+        200:
+          description: Success Get Customer Data
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/ResponseDetailCustomer'
+        400:
+          description: bad input parameter
+definitions:
+  registerOwner:
+    type: object
+    required: 
+      - name
+      - dateofbirth
+      - placeofbirth
+      - phonenumber
+      - email
+      - address
+      - city
+      - province
+    properties:
+      customerid:
+        type: string
+        format: uuid
+        example: RENTOWN20210001
+      name:
+        type: string
+        example: Tokyo
+      dateofbirth:
+        type: string
+        format: date
+        example: 1995-05-20
+      placeofbirth:
+        type: string
+        example: Makassar
+      phonenumber:
+        type: string
+        example: 08123456789
+      email:
+        type: string
+        example: tokyo@example.com
+      address:
+        type: string
+        example: Jl.Durian, Blok B Nomor 4
+      city:
+        type: string
+        example: Makassar
+      province:
+        type: string
+        example: Sulawesi Selatan
+      sex:
+        type: integer
+        example: 2
+  registerCustomer:
+    type: object
+    required: 
+      - name
+      - dateofbirth
+      - placeofbirth
+      - phonenumber
+      - email
+      - address
+      - city
+      - province
+    properties:
+      customerid:
+        type: string
+        format: uuid
+        example: RENT2021001
+      name:
+        type: string
+        example: Nairobi
+      dateofbirth:
+        type: string
+        format: date
+        example: 1995-05-20
+      placeofbirth:
+        type: string
+        example: Makassar
+      phonenumber:
+        type: string
+        example: 08123456789
+      email:
+        type: string
+        example: nairobi@example.com
+      address:
+        type: string
+        example: Jl.Mangga, Blok B Nomor 2
+      city:
+        type: string
+        example: Makassar
+      province:
+        type: string
+        example: Sulawesi Selatan
+      sex:
+        type: integer
+        example: 2
+  responseSuccessRegister:
+    type: object
+    required:
+        - idcustomer
+        - success
+        - message
+    properties:
+      idcustomer:
+                type: string
+                format: uuid
+                example: RENT2021001
+      success:
+              type: string
+              example: true
+      message:
+              type: string
+              example: User Register successfully
+  customerUpdate:
+    type: object
+    required: 
+      - customerid
+      - name
+      - dateofbirth
+      - placeofbirth
+      - phonenumber
+      - email
+      - address
+      - city
+      - province
+    properties:
+      customerid:
+        type: string
+        format: uuid
+        example: RENT2021001
+      name:
+        type: string
+        example: Nairobi
+      dateofbirth:
+        type: string
+        format: date
+        example: 1995-05-20
+      placeofbirth:
+        type: string
+        example: Makassar
+      phonenumber:
+        type: string
+        example: 08123456789
+      email:
+        type: string
+        example: nairobi@example.com
+      address:
+        type: string
+        example: Jl.Mangga, Blok B Nomor 2
+      city:
+        type: string
+        example: Makassar
+      province:
+        type: string
+        example: Sulawesi Selatan
+  responseSuccessUpdated :
+    type: object
+    required:
+        - success
+        - message
+    properties:
+      success:
+              type: string
+              example: true
+      message:
+              type: string
+              example: Customer updated successfully
+  deletedCustomer:
+    type: object
+    required: 
+      - idcustomer
+    properties:
+      idcustomer:
+        type: string
+        format: uuid
+        example: RENT2021001
+  ResponseDeletedCustomer:
+    type: object
+    required:
+        - success
+        - message
+    properties:
+      success:
+              type: string
+              example: true
+      message:
+              type: string
+              example: Customer deleted successfully
+  DetailCustomer:
+    type: object
+    required: 
+      - idcustomer
+    properties:
+      idcustomer:
+        type: string
+        format: uuid
+        example: RENT2021001
+  LoginUser:
+    type: object
+    required: 
+      - email
+      - password
+    properties:
+      email:
+        type: string
+        format: uuid
+        example: nairobi@example.com
+      password:
+        type: string
+        example: "**********"
+  ResponseUserLogin:
+    type: object
+    properties:
+      userid:
+        type: string
+        format: uuid
+        example: RENT2021001
+      name:
+        type: string
+        example: Nairobi
+      dateofbirth:
+        type: string
+        format: date
+        example: 1995-05-20
+      placeofbirth:
+        type: string
+        example: Makassar
+      phonenumber:
+        type: string
+        example: 08123456789
+      email:
+        type: string
+        example: nairobi@example.com
+      address:
+        type: string
+        example: Jl.Mangga, Blok B Nomor 2
+      city:
+        type: string
+        example: Makassar
+      province:
+        type: string
+        example: Sulawesi Selatan
+      sex:
+        type: integer
+        example: 2
+      category:
+        type: string
+        example: 1
+  ResponseDetailCustomer:
+    type: object
+    required:
+        - success
+        - message
+        - data
+    properties:
+      success:
+              type: string
+              example: true
+      message:
+              type: string
+              example: Data is found
+      data:
+          type: array
+          items:
+                $ref: '#/definitions/customerUpdate'
+  AddSpace:
+    type: object
+    required: 
+      - namespace
+      - type
+      - address
+      - city
+      - province
+      - landize
+      - costformonth
+      - ownerid
+    properties:
+      namespace:
+              type: string
+              example: Business Room
+      type:
+          type: integer
+          example: 1
+      address:
+          type: string
+          example: Jln. Sudirman, Blok A Nomor 2
+      city:
+          type: string
+          example: Makassar
+      province:
+          type: string
+          example: Sulawesi Selatan
+      landize: 
+          type: integer
+          example: 90m
+      costformonth:
+          type: integer
+          example: 5000000
+      ownerid:
+          type: string
+          example: RENTOWN20210001
+  ResponseAddSpace:
+    type: object
+    properties:
+      idspace:
+                type: string
+                format: uuid
+                example: SPC20210001
+      success:
+              type: string
+              example: true
+      message:
+              type: string
+              example: Space Adding successfully
+  ResponseSpaces:
+    properties:
+      idspace:
+            type: string
+            format: uuid
+            example: RENTOWN20210001
+      namespace:
+                type: string
+                example: Business Room
+      type:
+            type: integer
+            example: 1
+      address:
+            type: string
+            example: Jln. Sudirman, Blok A Nomor 2
+      city:
+            type: string
+            example: Makassar
+      province:
+            type: string
+            example: Sulawesi Selatan
+      landize: 
+            type: integer
+            example: 90m
+      costformonth:
+            type: integer
+            example: 5000000
+      ownerid:
+            type: string
+            example: RENTOWN20210001
+  ResponseSpacesByCity:
+    type: object
+    required:
+        - success
+        - message
+        - data
+    properties:
+      success:
+              type: string
+              example: true
+      message:
+              type: string
+              example: List Data Space By City is Found
+      data:
+          type: array
+          items:
+                $ref: '#/definitions/ResponseSpaces'
+  CheckoutScape:
+    type: object
+    required:
+      - idpsace
+      - checkoutdate
+      - totalmonth
+    properties:
+      idspace:
+          type: string
+          example: RENTOWN20210001
+      checkoutdate:
+          type: string
+          format: date
+          example: 2021-09-02
+      totalmonth:
+          type: integer
+          example: 2
+      costofmonth:
+          type: integer
+          example: 10000000
+      idcustomer:
+          type: string
+          example: RENT2021001
+  ResponseCheckoutSpace:
+    type: object
+    properties:
+      idspace:
+          type: string
+          example: RENTOWN20210001
+      checkoutdate:
+          type: string
+          format: date
+          example: 2021-09-02
+      totalmonth:
+          type: integer
+          example: 2
+      costofmonth:
+          type: integer
+          example: 10000000
+      idcustomer:
+          type: string
+          example: RENT2021001
+      status:
+          type: integer
+          example: 1
