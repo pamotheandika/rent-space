@@ -79,7 +79,7 @@ func main() {
 	customerCtrl := _customerController.NewCustomerController(customerUsecase)
 
 	ownerRepo := _driverFactory.NewOwnerRepository(db)
-	ownerUsecase := _ownerUsecase.NewOwnerUsace(timeoutContext, ownerRepo)
+	ownerUsecase := _ownerUsecase.NewOwnerUsace(timeoutContext, ownerRepo, &configJWT)
 	ownerCtrl := _ownerController.NewOwnerController(ownerUsecase)
 
 	spaceRepo := _driverFactory.NewSpaceRepository(db)
@@ -87,10 +87,11 @@ func main() {
 	spaceCtrl := _spaceController.NewSpaceController(spaceUsecase)
 
 	transactionRepo := _driverFactory.NewTransactionRepository(db)
-	transactionUsecase := _transactionUsecase.NewTransactionUsecase(timeoutContext, transactionRepo)
+	transactionUsecase := _transactionUsecase.NewTransactionUsecase(timeoutContext, transactionRepo, spaceUsecase)
 	transactionCtrl := _transactionController.NewTransactionController(transactionUsecase)
 
 	routesInit := _routes.ControllerList{
+		JWTMiddleware:         configJWT.Init(),
 		CustomerController:    *customerCtrl,
 		OwnerController:       *ownerCtrl,
 		SpaceController:       *spaceCtrl,

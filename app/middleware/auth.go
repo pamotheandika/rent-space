@@ -2,6 +2,7 @@ package middleware
 
 import (
 	controller "RentSpace/controllers"
+	"errors"
 	"net/http"
 	"time"
 
@@ -11,7 +12,8 @@ import (
 )
 
 type JwtCustomClaims struct {
-	ID int `json:"id"`
+	ID   int    `json:"id"`
+	Role string `json:"role"`
 	jwt.StandardClaims
 }
 
@@ -30,9 +32,10 @@ func (jwtConfig *ConfigJwt) Init() middleware.JWTConfig {
 	}
 }
 
-func (jwtConfig *ConfigJwt) GenerateToken(userID int) string {
+func (jwtConfig *ConfigJwt) GenerateToken(userID int, role string) string {
 	claims := JwtCustomClaims{
 		userID,
+		role,
 		jwt.StandardClaims{
 			ExpiresAt: time.Now().Local().Add(time.Hour * time.Duration(int64(jwtConfig.ExpiresDuration))).Unix(),
 		},
@@ -44,9 +47,22 @@ func (jwtConfig *ConfigJwt) GenerateToken(userID int) string {
 	return token
 }
 
-func GetCustomer(c echo.Context) *JwtCustomClaims {
-	customer := c.Get("customer").(*jwt.Token)
-	claims := customer.Claims.(*JwtCustomClaims)
-
+func GetUser(c echo.Context) *JwtCustomClaims {
+	user := c.Get("user").(*jwt.Token)
+	claims := user.Claims.(*JwtCustomClaims)
 	return claims
+}
+
+func RoleValidation(role string) echo.MiddlewareFunc {
+	return func(hf echo.HandlerFunc) echo.HandlerFunc {
+		return func(c echo.Context) error {
+			claims := GetUser(c)
+
+			if claims.Role == role {
+				return hf(c)
+			} else {
+				return controller.NewErrorResponse(c, http.StatusForbidden, errors.New("forbidden roles"))
+			}
+		}
+	}
 }

@@ -17,9 +17,9 @@ func NewMySQLRepository(conn *gorm.DB) customers.Repository {
 	}
 }
 
-func (nr *mysqlCustomersRepository) GetByEmail(ctx context.Context, email string) (customers.Domain, error) {
+func (cr *mysqlCustomersRepository) ValidationEmailPassword(ctx context.Context, email, password string) (customers.Domain, error) {
 	rec := Customer{}
-	result := nr.Conn.Where("email = ?", email).First(&rec)
+	result := cr.Conn.Where("email = ? and password = ?", email, password).First(&rec)
 
 	if result.Error != nil {
 		return customers.Domain{}, result.Error
@@ -27,9 +27,9 @@ func (nr *mysqlCustomersRepository) GetByEmail(ctx context.Context, email string
 	return rec.toDomain(), nil
 }
 
-func (cr *mysqlCustomersRepository) LoginCustomer(ctx context.Context, email, password string) (customers.Domain, error) {
+func (nr *mysqlCustomersRepository) GetByEmail(ctx context.Context, email string) (customers.Domain, error) {
 	rec := Customer{}
-	result := cr.Conn.Where("email = ?", email, " password = ?", password).First(&rec)
+	result := nr.Conn.Where("email = ?", email).First(&rec)
 
 	if result.Error != nil {
 		return customers.Domain{}, result.Error

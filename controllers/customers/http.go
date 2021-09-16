@@ -5,6 +5,7 @@ import (
 	controllers "RentSpace/controllers"
 	"RentSpace/controllers/customers/request"
 	"RentSpace/controllers/customers/response"
+	"context"
 	"net/http"
 
 	echo "github.com/labstack/echo/v4"
@@ -20,13 +21,15 @@ func NewCustomerController(cc customers.Usecase) *CustomerController {
 	}
 }
 
-func (ctrl *CustomerController) CreateToken(c echo.Context) error {
+func (ctrl *CustomerController) LoginCustomer(c echo.Context) error {
 	ctx := c.Request().Context()
+	cst := new(request.Customers)
 
-	email := c.QueryParam("email")
-	password := c.QueryParam("password")
+	if err := c.Bind(cst); err != nil {
+		return err
+	}
 
-	token, err := ctrl.customerUscase.CreateToken(ctx, email, password)
+	token, err := ctrl.customerUscase.LoginCustomer(ctx, cst.Email, cst.Password)
 	if err != nil {
 		return controllers.NewErrorResponse(c, http.StatusInternalServerError, err)
 	}
@@ -51,19 +54,6 @@ func (ctrl *CustomerController) GetByEmail(c echo.Context) error {
 	return controllers.NewSuccessResponse(c, customers)
 }
 
-func (ctrl *CustomerController) LoginCustomer(c echo.Context) error {
-	ctx := c.Request().Context()
-	cst := new(request.Customers)
-
-	if err := c.Bind(cst); err != nil {
-		return err
-	}
-
-	customers, _ := ctrl.customerUscase.LoginCustomer(ctx, cst.Email, cst.Password)
-
-	return controllers.NewSuccessResponse(c, customers)
-}
-
 func (ctrl *CustomerController) GetAllCustomer(c echo.Context) error {
 	ctx := c.Request().Context()
 
@@ -82,9 +72,9 @@ func (ctrl *CustomerController) GetAllCustomer(c echo.Context) error {
 
 func (ctrl *CustomerController) AddCustomer(c echo.Context) error {
 	ctx := c.Request().Context()
-
 	req := request.Customers{}
-	if err := c.Bind(&req); err != nil {
+
+	if err := c.Bind(&req); err != nil || req.IdentityNumber == "" {
 		return controllers.NewErrorResponse(c, http.StatusBadRequest, err)
 	}
 
@@ -94,4 +84,13 @@ func (ctrl *CustomerController) AddCustomer(c echo.Context) error {
 	}
 
 	return controllers.NewSuccessResponse(c, "Success Registered")
+}
+
+func (ctrl *CustomerController) UserRole(id int) string {
+	role := ""
+	user, err := ctrl.customerUscase.GetByID(context.Background(), id)
+	if err == nil {
+		role = user.Name
+	}
+	return role
 }

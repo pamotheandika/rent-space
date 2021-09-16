@@ -6,7 +6,7 @@ import (
 )
 
 type Owner struct {
-	IDCostumer     int `gorm:"primaryKey"`
+	IDOwner        int `gorm:"primaryKey"`
 	IdentityNumber string
 	Name           string
 	Password       string

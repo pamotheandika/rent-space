@@ -17,14 +17,31 @@ func NewMySQLRepository(conn *gorm.DB) owners.Repository {
 	}
 }
 
-func (cr *mysqlOwnerRepository) GetOwnerByCity(ctx context.Context, city string) (owners.Domain, error) {
+func (or *mysqlOwnerRepository) LoginOwner(ctx context.Context, email, password string) (owners.Domain, error) {
 	rec := Owner{}
-	result := cr.Conn.Where("city = ?", city).First(&rec)
+	result := or.Conn.Where("email = ?", email, "password = ?", password).First(&rec)
 
 	if result.Error != nil {
 		return owners.Domain{}, result.Error
 	}
+
 	return rec.toDomain(), nil
+}
+
+func (cr *mysqlOwnerRepository) GetOwnerByCity(ctx context.Context, city string) ([]owners.Domain, error) {
+	rec := []Owner{}
+	result := cr.Conn.Where("city = ?", city).Find(&rec)
+
+	if result.Error != nil {
+		return []owners.Domain{}, result.Error
+	}
+
+	ownerList := []owners.Domain{}
+	for _, value := range rec {
+		ownerList = append(ownerList, value.toDomain())
+	}
+
+	return ownerList, nil
 }
 
 func (cr *mysqlOwnerRepository) GetAllOwner(ctx context.Context) ([]owners.Domain, error) {

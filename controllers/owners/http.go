@@ -47,6 +47,39 @@ func (ctrl *OwnerController) GetByEmail(c echo.Context, email string) error {
 	return controllers.NewSuccessResponse(c, owner)
 }
 
+func (ctrl *OwnerController) GetOwnerByCity(c echo.Context) error {
+	ctx := c.Request().Context()
+	cst := new(request.Owners)
+
+	if err := c.Bind(cst); err != nil {
+		return err
+	}
+
+	owners, _ := ctrl.ownerUscase.GetOwnerByCity(ctx, cst.City)
+
+	return controllers.NewSuccessResponse(c, response.FromDomainList(owners))
+}
+
+func (ctrl *OwnerController) LoginOwner(c echo.Context) error {
+	ctx := c.Request().Context()
+	cst := new(request.Owners)
+
+	if err := c.Bind(cst); err != nil {
+		return err
+	}
+
+	token, err := ctrl.ownerUscase.LoginOwner(ctx, cst.Email, cst.Password)
+	if err != nil {
+		return controllers.NewErrorResponse(c, http.StatusInternalServerError, err)
+	}
+
+	response := struct {
+		Token string `json:"token"`
+	}{Token: token}
+
+	return controllers.NewSuccessResponse(c, response)
+}
+
 func (ctrl *OwnerController) AddOwner(c echo.Context) error {
 	ctx := c.Request().Context()
 

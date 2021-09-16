@@ -21,12 +21,21 @@ func FromDomain(domain owners.Domain) Owner {
 		IdentityNumber: domain.IdentityNumber,
 		Name:           domain.Name,
 		Email:          domain.Email,
-		BirthOfDate: domain.BirthOfDate,
-		PlaceOfBirth: domain.PlaceOfBirth,
-		PhoneNumber: domain.PhoneNumber,
-		Address: domain.Address,
-		District: domain.District,
-		City: domain.City,
-		Province: domain.Province,
+		BirthOfDate:    domain.BirthOfDate,
+		PlaceOfBirth:   domain.PlaceOfBirth,
+		PhoneNumber:    domain.PhoneNumber,
+		Address:        domain.Address,
+		District:       domain.District,
+		City:           domain.City,
+		Province:       domain.Province,
 	}
+}
+
+func FromDomainList(domains []owners.Domain) []Owner {
+	responseList := []Owner{}
+	for _, value := range domains {
+		responseList = append(responseList, FromDomain(value))
+	}
+
+	return responseList
 }

@@ -17,8 +17,6 @@ var (
 
 	ErrDuplicateData = errors.New("duplicate data")
 
-	ErrUsernamePasswordNotFound = errors.New("(Username) or (Password) empty")
-
 	ErrEmailCustomerResource = errors.New("(Email) not found or empty")
 
 	ErrEmailPasswordNotFound = errors.New("(Email) or (Password) cannot be empty")

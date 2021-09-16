@@ -13,15 +13,17 @@ type Domain struct {
 	PhoneNumber string
 	IDOwner     int
 	Cost        int
-	Status 		int
+	Status      int
 }
 
 type Usecase interface {
 	AddSpace(ctx context.Context, space *Domain) error
 	GetAllSpace(ctx context.Context) ([]Domain, error)
+	UpdateStatusSpace(ctx context.Context, IDSpace int) error
 }
 
 type Repository interface {
 	AddSpace(ctx context.Context, space *Domain) error
 	GetAllSpace(ctx context.Context) ([]Domain, error)
+	UpdateStatusSpace(ctx context.Context, IDSpace int) error
 }

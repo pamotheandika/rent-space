@@ -31,7 +31,7 @@ func (cu *customerUsecase) GetAllCustomer(ctx context.Context) ([]Domain, error)
 	return res, err
 }
 
-func (cu *customerUsecase) CreateToken(ctx context.Context, email, password string) (string, error) {
+func (cu *customerUsecase) LoginCustomer(ctx context.Context, email, password string) (string, error) {
 	ctx, cancel := context.WithTimeout(ctx, cu.contextTimeout)
 	defer cancel()
 
@@ -48,8 +48,12 @@ func (cu *customerUsecase) CreateToken(ctx context.Context, email, password stri
 		return "", businesses.ErrInternalServer
 	}
 
-	token := cu.jwtAuth.GenerateToken(customerDomain.IDCostumer)
+	token := cu.jwtAuth.GenerateToken(customerDomain.IDCostumer, "customer")
 	return token, nil
+}
+
+func (uc *customerUsecase) GetByID(ctx context.Context, id int) (Domain, error) {
+	return Domain{}, nil
 }
 
 func (cu *customerUsecase) GetByEmail(ctx context.Context, email string) (Domain, error) {
@@ -68,33 +72,10 @@ func (cu *customerUsecase) GetByEmail(ctx context.Context, email string) (Domain
 	return resp, nil
 }
 
-func (cu *customerUsecase) LoginCustomer(ctx context.Context, email, password string) (Domain, error) {
-	ctx, cancel := context.WithTimeout(ctx, cu.contextTimeout)
-	defer cancel()
-
-	if strings.TrimSpace(email) == "" || strings.TrimSpace(password) == "" {
-		return Domain{}, businesses.ErrEmailPasswordNotFound
-	}
-
-	resp, err := cu.customerRepository.LoginCustomer(ctx, email, password)
-	if err != nil {
-		return Domain{}, err
-	}
-	return resp, nil
-}
-
-// func (cu *customerUsecase) GetAllCustomer(ctx context.Context) ([]Domain, error) {
-// 	resp, err := cu.customerRepository.GetAllCustomer(ctx)
-// 	if err != nil {
-// 		return []Domain{}, err
-// 	}
-// 	return resp, nil
-// }
-
 func (uc *customerUsecase) AddCustomer(ctx context.Context, customerDomain *Domain) error {
 	ctx, cancel := context.WithTimeout(ctx, uc.contextTimeout)
 	defer cancel()
-
+	
 	existedUser, err := uc.customerRepository.GetByEmail(ctx, customerDomain.Email)
 	if err != nil {
 		if !strings.Contains(err.Error(), "not found") {

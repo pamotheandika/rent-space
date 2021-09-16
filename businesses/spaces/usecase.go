@@ -17,6 +17,16 @@ func NewSpaceUsace(timeout time.Duration, usecase Repository) Usecase {
 	}
 }
 
+func (sc *spaceUsecase) UpdateStatusSpace(ctx context.Context, IDSpace int) error {
+	err := sc.spaceRepository.UpdateStatusSpace(ctx, IDSpace)
+
+	if err != nil {
+		return err
+	}
+
+	return err
+}
+
 func (sc *spaceUsecase) GetAllSpace(ctx context.Context) ([]Domain, error) {
 	res, err := sc.spaceRepository.GetAllSpace(ctx)
 	if err != nil {

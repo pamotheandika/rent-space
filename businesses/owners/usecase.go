@@ -1,6 +1,7 @@
 package owners
 
 import (
+	"RentSpace/app/middleware"
 	"RentSpace/businesses"
 	"RentSpace/helpers/encrypt"
 	"context"
@@ -11,26 +12,50 @@ import (
 type ownerUsecase struct {
 	ownerRepository Repository
 	contextTimeout  time.Duration
+	jwtAuth         *middleware.ConfigJwt
 }
 
-func NewOwnerUsace(timeout time.Duration, usecase Repository) Usecase {
+func NewOwnerUsace(timeout time.Duration, usecase Repository, jwtauth *middleware.ConfigJwt) Usecase {
 	return &ownerUsecase{
 		ownerRepository: usecase,
 		contextTimeout:  timeout,
+		jwtAuth:         jwtauth,
 	}
 }
 
-func (cu *ownerUsecase) GetOwnerByCity(ctx context.Context, city string) (Domain, error) {
+func (oc *ownerUsecase) LoginOwner(ctx context.Context, email, password string) (string, error) {
+	ctx, cancel := context.WithTimeout(ctx, oc.contextTimeout)
+	defer cancel()
+
+	if strings.TrimSpace(email) == "" || strings.TrimSpace(password) == "" {
+		return "", businesses.ErrEmailPasswordNotFound
+	}
+
+	resp, err := oc.ownerRepository.GetByEmail(ctx, email)
+	if err != nil {
+		return "", err
+	}
+
+	if !encrypt.ValidateHash(password, resp.Password) {
+		return "", businesses.ErrInternalServer
+	}
+
+	token := oc.jwtAuth.GenerateToken(resp.IDOwner, "owner")
+	return token, nil
+
+}
+
+func (cu *ownerUsecase) GetOwnerByCity(ctx context.Context, city string) ([]Domain, error) {
 	ctx, cancel := context.WithTimeout(ctx, cu.contextTimeout)
 	defer cancel()
 
 	if strings.TrimSpace(city) == "" {
-		return Domain{}, businesses.ErrNewsTitleResource
+		return []Domain{}, businesses.ErrNewsTitleResource
 	}
 
 	resp, err := cu.ownerRepository.GetOwnerByCity(ctx, city)
 	if err != nil {
-		return Domain{}, err
+		return []Domain{}, err
 	}
 
 	return resp, nil

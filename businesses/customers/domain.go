@@ -24,16 +24,18 @@ type Domain struct {
 }
 
 type Usecase interface {
-	CreateToken(ctx context.Context, email, password string) (string, error)
+	LoginCustomer(ctx context.Context, email, password string) (string, error)
 	AddCustomer(ctx context.Context, customer *Domain) error
 	GetAllCustomer(ctx context.Context) ([]Domain, error)
 	GetByEmail(ctx context.Context, email string) (Domain, error)
-	LoginCustomer(ctx context.Context, email, password string) (Domain, error)
+	GetByID(ctx context.Context, id int) (Domain, error)
+	// LoginCustomer(ctx context.Context, email, password string) (string, error)
 }
 
 type Repository interface {
 	AddCustomer(ctx context.Context, customer *Domain) error
 	GetByEmail(ctx context.Context, email string) (Domain, error)
 	GetAllCustomer(ctx context.Context) ([]Domain, error)
-	LoginCustomer(ctx context.Context, email, password string) (Domain, error)
+	// LoginCustomer(ctx context.Context, email, password string) (string, error)
+	ValidationEmailPassword(ctx context.Context, email, password string) (Domain, error)
 }

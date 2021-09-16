@@ -6,7 +6,7 @@ import (
 )
 
 type Domain struct {
-	ID             int
+	IDOwner        int
 	IdentityNumber string
 	Name           string
 	BirthOfDate    string
@@ -27,12 +27,13 @@ type Usecase interface {
 	AddOwner(ctx context.Context, owner *Domain) error
 	GetByEmail(ctx context.Context, email string) (Domain, error)
 	GetAllOwner(ctx context.Context) ([]Domain, error)
-	GetOwnerByCity(ctx context.Context, city string) (Domain, error)
+	GetOwnerByCity(ctx context.Context, city string) ([]Domain, error)
+	LoginOwner(ctx context.Context, email, password string) (string, error)
 }
 
 type Repository interface {
 	AddOwner(ctx context.Context, owner *Domain) error
 	GetByEmail(ctx context.Context, email string) (Domain, error)
 	GetAllOwner(ctx context.Context) ([]Domain, error)
-	GetOwnerByCity(ctx context.Context, city string) (Domain, error)
+	GetOwnerByCity(ctx context.Context, city string) ([]Domain, error)
 }
