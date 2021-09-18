@@ -13,6 +13,12 @@ import (
 	transactionDomain "RentSpace/businesses/transactions"
 	transactionDB "RentSpace/drivers/databases/transaction"
 
+	paymentDomain "RentSpace/businesses/payments"
+	paymentDB "RentSpace/drivers/databases/payment"
+
+	districtDomain "RentSpace/businesses/districts"
+	districtDB "RentSpace/drivers/databases/district"
+
 	"gorm.io/gorm"
 )
 
@@ -30,4 +36,12 @@ func NewSpaceRepository(conn *gorm.DB) spaceDomain.Repository {
 
 func NewTransactionRepository(conn *gorm.DB) transactionDomain.Repository {
 	return transactionDB.NewMySQLRepository(conn)
+}
+
+func NewPaymentRepository(conn *gorm.DB) paymentDomain.Repository {
+	return paymentDB.NewMySQLRepository(conn)
+}
+
+func NewDistrictRepository(conn *gorm.DB) districtDomain.Repository {
+	return districtDB.NewMySQLRepository(conn)
 }

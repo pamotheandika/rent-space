@@ -19,7 +19,8 @@ func NewMySQLRepository(conn *gorm.DB) spaces.Repository {
 }
 
 func (sr *mysqlSpaceRepository) UpdateStatusSpace(ctx context.Context, IDSpace int) error {
-	resp := sr.Conn.Where("id_space =", IDSpace).Update("status = ?", 1)
+	rec := Space{}
+	resp := sr.Conn.Where("id_space = ?", IDSpace).Find(&rec).Update("status",1)
 
 	if resp.Error != nil {
 		return resp.Error

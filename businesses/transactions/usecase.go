@@ -37,3 +37,16 @@ func (tc *transactionUsecase) AddTransaction(ctx context.Context, transactionDom
 
 	return nil
 }
+
+func (tc *transactionUsecase) UpdateStatusTransaction(ctx context.Context, IDTransaction int) error {
+	ctx, cancel := context.WithTimeout(ctx, tc.contextTimeout)
+	defer cancel()
+
+	err := tc.transactionRepository.UpdateStatusTransaction(ctx, IDTransaction)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}

@@ -15,6 +15,7 @@ type Transaction struct {
 	RentTotalMonth  int
 	Cost            int
 	TotalCost       int
+	Status          int `gorm:"default:0"`
 	CreatedAt       time.Time
 	UpdatedAt       time.Time
 	DeletedAt       time.Time
@@ -31,6 +32,7 @@ func (transaction *Transaction) toDomain() transactions.Domain {
 		RentTotalMonth:  transaction.RentTotalMonth,
 		Cost:            transaction.Cost,
 		TotalCost:       transaction.TotalCost,
+		Status:          transaction.Status,
 	}
 }
 

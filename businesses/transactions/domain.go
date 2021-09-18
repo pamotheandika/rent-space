@@ -15,6 +15,7 @@ type Domain struct {
 	RentTotalMonth  int
 	Cost            int
 	TotalCost       int
+	Status          int
 	CreatedAt       time.Time
 	UpdatedAt       time.Time
 	DeletedAt       time.Time
@@ -22,8 +23,10 @@ type Domain struct {
 
 type Usecase interface {
 	AddTransaction(ctx context.Context, transaction *Domain) error
+	UpdateStatusTransaction(ctc context.Context, IDTransaction int) error
 }
 
 type Repository interface {
 	AddTransaction(ctx context.Context, transaction *Domain) error
+	UpdateStatusTransaction(ctc context.Context, IDTransaction int) error
 }

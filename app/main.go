@@ -19,6 +19,14 @@ import (
 	_transactionController "RentSpace/controllers/transactions"
 	_transactionRepo "RentSpace/drivers/databases/transaction"
 
+	_paymentUsecase "RentSpace/businesses/payments"
+	_paymentController "RentSpace/controllers/payments"
+	_paymentRepo "RentSpace/drivers/databases/payment"
+
+	_districtUsecase "RentSpace/businesses/districts"
+	_districtController "RentSpace/controllers/districts"
+	_districtRepo "RentSpace/drivers/databases/district"
+
 	_routes "RentSpace/app/routes"
 
 	_dbDriver "RentSpace/drivers/mysql"
@@ -50,6 +58,8 @@ func DBConnection(db *gorm.DB) {
 		&_ownerRepo.Owner{},
 		&_spaceRepo.Space{},
 		&_transactionRepo.Transaction{},
+		&_districtRepo.District{},
+		&_paymentRepo.Payment{},
 	)
 }
 
@@ -90,12 +100,22 @@ func main() {
 	transactionUsecase := _transactionUsecase.NewTransactionUsecase(timeoutContext, transactionRepo, spaceUsecase)
 	transactionCtrl := _transactionController.NewTransactionController(transactionUsecase)
 
+	paymentRepo := _driverFactory.NewPaymentRepository(db)
+	paymentUsecase := _paymentUsecase.NewPaymentUsecase(timeoutContext, paymentRepo, transactionUsecase)
+	paymentCtrl := _paymentController.NewPaymentController(paymentUsecase)
+
+	districtRepo := _driverFactory.NewDistrictRepository(db)
+	districtUsecase := _districtUsecase.NewDistrictUsecase(timeoutContext, districtRepo)
+	districtCtrl := _districtController.NewDistrictController(districtUsecase)
+
 	routesInit := _routes.ControllerList{
 		JWTMiddleware:         configJWT.Init(),
 		CustomerController:    *customerCtrl,
 		OwnerController:       *ownerCtrl,
 		SpaceController:       *spaceCtrl,
 		TransactionController: *transactionCtrl,
+		DistrictController:    *districtCtrl,
+		PaymentController:     *paymentCtrl,
 	}
 
 	routesInit.RouteRegister(e)

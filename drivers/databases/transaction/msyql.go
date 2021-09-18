@@ -26,5 +26,13 @@ func (tr *mysqlTransactionRepository) AddTransaction(ctx context.Context, transa
 	return nil
 }
 
+func (sr *mysqlTransactionRepository) UpdateStatusTransaction(ctx context.Context, IDTransaction int) error {
+	rec := Transaction{}
+	resp := sr.Conn.Where("id_transaction = ?", IDTransaction).Find(&rec).Update("status", 1)
 
+	if resp.Error != nil {
+		return resp.Error
+	}
 
+	return nil
+}
