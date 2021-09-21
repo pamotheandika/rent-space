@@ -6,7 +6,7 @@ import (
 )
 
 type Domain struct {
-	IDOwner        int
+	ID        int
 	IdentityNumber string
 	Name           string
 	BirthOfDate    string

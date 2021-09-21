@@ -3,7 +3,7 @@ package space
 import "RentSpace/businesses/spaces"
 
 type Space struct {
-	IDSpace     int `gorm:"primaryKey"`
+	ID          int `gorm:"primaryKey"`
 	Name        string
 	Address     string
 	District    string
@@ -19,6 +19,7 @@ type Space struct {
 
 func (space *Space) toDomain() spaces.Domain {
 	return spaces.Domain{
+		ID:          space.ID,
 		Name:        space.Name,
 		Address:     space.Address,
 		District:    space.District,
@@ -34,7 +35,7 @@ func (space *Space) toDomain() spaces.Domain {
 
 func fromDomain(req spaces.Domain) *Space {
 	return &Space{
-		IDSpace:     req.IDSpace,
+		ID:          req.ID,
 		Name:        req.Name,
 		Address:     req.Address,
 		District:    req.District,

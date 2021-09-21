@@ -6,12 +6,15 @@ import (
 )
 
 type Domain struct {
-	IDTransaction   int
+	ID              int
 	InvoiceNumber   string
 	TransactionDate string
-	IDSpace         int
-	IDOwner         int
-	IDCustomer      int
+	SpaceID         int
+	SpaceName       string
+	OwnerID         int
+	OwnerName       string
+	CustomerID      int
+	CustomerName    string
 	RentTotalMonth  int
 	Cost            int
 	TotalCost       int
@@ -24,9 +27,11 @@ type Domain struct {
 type Usecase interface {
 	AddTransaction(ctx context.Context, transaction *Domain) error
 	UpdateStatusTransaction(ctc context.Context, IDTransaction int) error
+	GetAllTransaction(ctx context.Context) ([]Domain, error)
 }
 
 type Repository interface {
 	AddTransaction(ctx context.Context, transaction *Domain) error
 	UpdateStatusTransaction(ctc context.Context, IDTransaction int) error
+	GetAllTransaction(ctx context.Context) ([]Domain, error)
 }

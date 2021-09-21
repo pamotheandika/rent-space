@@ -48,7 +48,7 @@ func (cu *customerUsecase) LoginCustomer(ctx context.Context, email, password st
 		return "", businesses.ErrInternalServer
 	}
 
-	token := cu.jwtAuth.GenerateToken(customerDomain.IDCostumer, "customer")
+	token := cu.jwtAuth.GenerateToken(customerDomain.ID, "customer")
 	return token, nil
 }
 
@@ -75,7 +75,7 @@ func (cu *customerUsecase) GetByEmail(ctx context.Context, email string) (Domain
 func (uc *customerUsecase) AddCustomer(ctx context.Context, customerDomain *Domain) error {
 	ctx, cancel := context.WithTimeout(ctx, uc.contextTimeout)
 	defer cancel()
-	
+
 	existedUser, err := uc.customerRepository.GetByEmail(ctx, customerDomain.Email)
 	if err != nil {
 		if !strings.Contains(err.Error(), "not found") {

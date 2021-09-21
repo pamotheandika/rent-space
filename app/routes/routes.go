@@ -2,8 +2,8 @@ package routes
 
 import (
 	_middlewareauth "RentSpace/app/middleware"
+	"RentSpace/controllers/cities"
 	"RentSpace/controllers/customers"
-	"RentSpace/controllers/districts"
 	"RentSpace/controllers/owners"
 	"RentSpace/controllers/payments"
 	"RentSpace/controllers/spaces"
@@ -20,7 +20,7 @@ type ControllerList struct {
 	SpaceController       spaces.SpaceController
 	TransactionController transactions.TransactionController
 	PaymentController     payments.PaymentController
-	DistrictController    districts.DistrictController
+	CitiesController      cities.CitiesController
 }
 
 func (cl *ControllerList) RouteRegister(e *echo.Echo) {
@@ -42,10 +42,12 @@ func (cl *ControllerList) RouteRegister(e *echo.Echo) {
 
 	transactions := e.Group("transaction", middleware.JWTWithConfig(cl.JWTMiddleware))
 	transactions.POST("/checkoutspace", cl.TransactionController.AddTransaction)
+	transactions.GET("/listransactions", cl.TransactionController.GetAllTransaction)
 
 	payments := e.Group("payment")
 	payments.POST("/addpayment", cl.PaymentController.AddPayment)
 
-	districts := e.Group("district")
-	districts.POST("/adddistrict", cl.DistrictController.AddDistrict)
+	cities := e.Group("cities")
+	cities.GET("/list", cl.CitiesController.GetCities)
+
 }

@@ -16,9 +16,6 @@ import (
 	paymentDomain "RentSpace/businesses/payments"
 	paymentDB "RentSpace/drivers/databases/payment"
 
-	districtDomain "RentSpace/businesses/districts"
-	districtDB "RentSpace/drivers/databases/district"
-
 	"gorm.io/gorm"
 )
 
@@ -40,8 +37,4 @@ func NewTransactionRepository(conn *gorm.DB) transactionDomain.Repository {
 
 func NewPaymentRepository(conn *gorm.DB) paymentDomain.Repository {
 	return paymentDB.NewMySQLRepository(conn)
-}
-
-func NewDistrictRepository(conn *gorm.DB) districtDomain.Repository {
-	return districtDB.NewMySQLRepository(conn)
 }

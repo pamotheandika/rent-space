@@ -2,48 +2,55 @@ package transaction
 
 import (
 	"RentSpace/businesses/transactions"
+	"RentSpace/drivers/databases/customer"
+	"RentSpace/drivers/databases/owner"
+	"RentSpace/drivers/databases/space"
 	"time"
 )
 
 type Transaction struct {
-	IDTransaction   int `gorm:"primaryKey"`
+	ID              int `gorm:"primaryKey"`
 	InvoiceNumber   string
 	TransactionDate string
-	IDSpace         int
-	IDOwner         int
-	IDCustomer      int
+	SpaceID         int
+	Space           space.Space
+	OwnerID         int
+	Owner           owner.Owner
+	CustomerID      int
+	Customer        customer.Customer
 	RentTotalMonth  int
 	Cost            int
 	TotalCost       int
-	Status          int `gorm:"default:0"`
 	CreatedAt       time.Time
 	UpdatedAt       time.Time
 	DeletedAt       time.Time
 }
 
-func (transaction *Transaction) toDomain() transactions.Domain {
-	return transactions.Domain{
-		IDTransaction:   transaction.IDTransaction,
+func fromDomain(transaction *transactions.Domain) *Transaction {
+	return &Transaction{
+		ID:              transaction.ID,
 		InvoiceNumber:   transaction.InvoiceNumber,
 		TransactionDate: transaction.TransactionDate,
-		IDSpace:         transaction.IDSpace,
-		IDOwner:         transaction.IDOwner,
-		IDCustomer:      transaction.IDCustomer,
+		SpaceID:         transaction.SpaceID,
+		OwnerID:         transaction.OwnerID,
+		CustomerID:      transaction.CustomerID,
 		RentTotalMonth:  transaction.RentTotalMonth,
 		Cost:            transaction.Cost,
 		TotalCost:       transaction.TotalCost,
-		Status:          transaction.Status,
 	}
 }
 
-func fromDomain(transaction transactions.Domain) *Transaction {
-	return &Transaction{
-		IDTransaction:   transaction.IDTransaction,
+func (transaction *Transaction) toDomain() transactions.Domain {
+	return transactions.Domain{
+		ID:              transaction.ID,
 		InvoiceNumber:   transaction.InvoiceNumber,
 		TransactionDate: transaction.TransactionDate,
-		IDSpace:         transaction.IDSpace,
-		IDOwner:         transaction.IDOwner,
-		IDCustomer:      transaction.IDCustomer,
+		SpaceID:         transaction.SpaceID,
+		SpaceName:       transaction.Space.Name,
+		OwnerID:         transaction.OwnerID,
+		OwnerName:       transaction.Owner.Name,
+		CustomerID:      transaction.CustomerID,
+		CustomerName:    transaction.Customer.Name,
 		RentTotalMonth:  transaction.RentTotalMonth,
 		Cost:            transaction.Cost,
 		TotalCost:       transaction.TotalCost,

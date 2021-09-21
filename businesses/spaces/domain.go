@@ -3,7 +3,7 @@ package spaces
 import "context"
 
 type Domain struct {
-	IDSpace     int
+	ID     int
 	Name        string
 	Address     string
 	District    string

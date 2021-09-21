@@ -3,7 +3,6 @@ package space
 import (
 	"RentSpace/businesses/spaces"
 	"context"
-	"fmt"
 
 	"gorm.io/gorm"
 )
@@ -20,7 +19,7 @@ func NewMySQLRepository(conn *gorm.DB) spaces.Repository {
 
 func (sr *mysqlSpaceRepository) UpdateStatusSpace(ctx context.Context, IDSpace int) error {
 	rec := Space{}
-	resp := sr.Conn.Where("id_space = ?", IDSpace).Find(&rec).Update("status",1)
+	resp := sr.Conn.Where("id = ?", IDSpace).Find(&rec).Update("status",1)
 
 	if resp.Error != nil {
 		return resp.Error
@@ -43,7 +42,6 @@ func (sr *mysqlSpaceRepository) GetAllSpace(ctx context.Context) ([]spaces.Domai
 		spaceDomains = append(spaceDomains, value.toDomain())
 	}
 
-	fmt.Println(spaceDomains)
 
 	return spaceDomains, nil
 

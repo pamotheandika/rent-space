@@ -40,7 +40,7 @@ func (oc *ownerUsecase) LoginOwner(ctx context.Context, email, password string) 
 		return "", businesses.ErrInternalServer
 	}
 
-	token := oc.jwtAuth.GenerateToken(resp.IDOwner, "owner")
+	token := oc.jwtAuth.GenerateToken(resp.ID, "owner")
 	return token, nil
 
 }

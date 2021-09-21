@@ -23,9 +23,7 @@ import (
 	_paymentController "RentSpace/controllers/payments"
 	_paymentRepo "RentSpace/drivers/databases/payment"
 
-	_districtUsecase "RentSpace/businesses/districts"
-	_districtController "RentSpace/controllers/districts"
-	_districtRepo "RentSpace/drivers/databases/district"
+	_thirdparty "RentSpace/drivers/thirdparty"
 
 	_routes "RentSpace/app/routes"
 
@@ -58,8 +56,8 @@ func DBConnection(db *gorm.DB) {
 		&_ownerRepo.Owner{},
 		&_spaceRepo.Space{},
 		&_transactionRepo.Transaction{},
-		&_districtRepo.District{},
 		&_paymentRepo.Payment{},
+		&_thirdparty.RapidAPI{},
 	)
 }
 
@@ -104,17 +102,12 @@ func main() {
 	paymentUsecase := _paymentUsecase.NewPaymentUsecase(timeoutContext, paymentRepo, transactionUsecase)
 	paymentCtrl := _paymentController.NewPaymentController(paymentUsecase)
 
-	districtRepo := _driverFactory.NewDistrictRepository(db)
-	districtUsecase := _districtUsecase.NewDistrictUsecase(timeoutContext, districtRepo)
-	districtCtrl := _districtController.NewDistrictController(districtUsecase)
-
 	routesInit := _routes.ControllerList{
 		JWTMiddleware:         configJWT.Init(),
 		CustomerController:    *customerCtrl,
 		OwnerController:       *ownerCtrl,
 		SpaceController:       *spaceCtrl,
 		TransactionController: *transactionCtrl,
-		DistrictController:    *districtCtrl,
 		PaymentController:     *paymentCtrl,
 	}
 

@@ -1,6 +1,8 @@
 package transactions
 
 import (
+	"RentSpace/businesses/customers"
+	"RentSpace/businesses/owners"
 	"RentSpace/businesses/spaces"
 	"context"
 	"time"
@@ -10,6 +12,8 @@ type transactionUsecase struct {
 	transactionRepository Repository
 	spaceUsecase          spaces.Usecase
 	contextTimeout        time.Duration
+	customerUsecase       customers.Usecase
+	ownerUsercase         owners.Usecase
 }
 
 func NewTransactionUsecase(timeout time.Duration, usecase Repository, spaceUsecase spaces.Usecase) Usecase {
@@ -29,13 +33,25 @@ func (tc *transactionUsecase) AddTransaction(ctx context.Context, transactionDom
 		return err
 	}
 
-	err = tc.spaceUsecase.UpdateStatusSpace(ctx, transactionDomain.IDSpace)
+	err = tc.spaceUsecase.UpdateStatusSpace(ctx, transactionDomain.SpaceID)
 
 	if err != nil {
 		return err
 	}
 
 	return nil
+}
+
+func (tc *transactionUsecase) GetAllTransaction(ctx context.Context) ([]Domain, error) {
+	ctx, cancel := context.WithTimeout(ctx, tc.contextTimeout)
+	defer cancel()
+
+	res, err := tc.transactionRepository.GetAllTransaction(ctx)
+	if err != nil {
+		return []Domain{}, err
+	}
+
+	return res, nil
 }
 
 func (tc *transactionUsecase) UpdateStatusTransaction(ctx context.Context, IDTransaction int) error {
