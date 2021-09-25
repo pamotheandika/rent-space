@@ -1,8 +1,6 @@
 package transactions
 
 import (
-	"RentSpace/businesses/customers"
-	"RentSpace/businesses/owners"
 	"RentSpace/businesses/spaces"
 	"context"
 	"time"
@@ -12,8 +10,6 @@ type transactionUsecase struct {
 	transactionRepository Repository
 	spaceUsecase          spaces.Usecase
 	contextTimeout        time.Duration
-	customerUsecase       customers.Usecase
-	ownerUsercase         owners.Usecase
 }
 
 func NewTransactionUsecase(timeout time.Duration, usecase Repository, spaceUsecase spaces.Usecase) Usecase {

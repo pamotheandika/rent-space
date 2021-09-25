@@ -6,7 +6,7 @@ import (
 )
 
 type Domain struct {
-	ID     int
+	ID             int
 	IdentityNumber string
 	Name           string
 	Password       string
@@ -36,6 +36,5 @@ type Repository interface {
 	AddCustomer(ctx context.Context, customer *Domain) error
 	GetByEmail(ctx context.Context, email string) (Domain, error)
 	GetAllCustomer(ctx context.Context) ([]Domain, error)
-	// LoginCustomer(ctx context.Context, email, password string) (string, error)
 	ValidationEmailPassword(ctx context.Context, email, password string) (Domain, error)
 }
